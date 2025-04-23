@@ -123,7 +123,24 @@ g 마무리 요약 표
 
 const URL = "https://nomad-movies.nomadcoders.workers.dev/movies";
 
-export async function getMovies() {
+export interface IMovies {
+    adult: boolean;
+    backdrop_path: string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_title: string;
+    overview: string;
+    popularity: number;
+    poster_path: string;
+    release_date: string;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
+}
+
+export async function getMovies(): Promise<IMovies[] | undefined> {
 
     try {
 
@@ -143,5 +160,105 @@ export async function getMovies() {
     } catch (error) {
 
         console.error(error);
+        return undefined;
+    }
+}
+
+export interface IMovieDetail {
+    adult: boolean;
+    backdrop_path: string;
+    belongs_to_collection?: {
+        id: number;
+        name: string;
+        poster_path: string;
+        backdrop_path: string;
+    };
+    budget: number;
+    genres: {
+        id: number;
+        name: string;
+    }[];
+    homepage: string;
+    id: number;
+    imdb_id: string;
+    origin_country: string[];
+    original_language: string;
+    original_title: string;
+    overview: string;
+    popularity: number;
+    poster_path: string;
+    production_companies: {
+        id: number;
+        logo_path: string | null;
+        name: string;
+        origin_country: string;
+    }[];
+    production_countries: {
+        iso_3166_1: string;
+        name: string;
+    }[];
+    release_date: string;
+    revenue: number;
+    runtime: number;
+    spoken_languages: {
+        english_name: string;
+        iso_639_1: string;
+        name: string;
+    }[];
+    status: string;
+    tagline: string;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
+}
+
+export async function getMovieDetail(id: string): Promise<IMovieDetail | undefined> {
+
+    try {
+
+        const fetchData = await fetch(
+            `${URL}/${id}`,
+            {
+                next: {
+                    revalidate: 86400
+                }
+            }
+        );
+
+        const res = await fetchData.json();
+
+        return res;
+
+    } catch (error) {
+
+        console.error(error);
+        return undefined;
+    }
+}
+
+export async function getVideos(id: string) {
+
+    throw new Error('someting is broken');
+
+    try {
+
+        const fetchData = await fetch(
+            `${URL}/${id}/videos`,
+            {
+                next: {
+                    revalidate: 86400
+                }
+            }
+        );
+
+        const res = await fetchData.json();
+
+        return res;
+
+    } catch (error) {
+
+        console.log(error);
+        return undefined;
     }
 }

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 };
 
 
-export default function AboutUs() {
+export default async function AboutUs() {
 
     return (
         <div>
