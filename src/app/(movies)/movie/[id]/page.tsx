@@ -30,7 +30,7 @@ export default async function MovieDetail({ params }: { params: { id: string } }
      * g 클라이언트 컴포넌트를 감싸는 부모가 되면 위에 "use client"를 선언해줘야한다
     */
     return (
-        <>
+        <div>
             <Suspense fallback={<h1>wait on info</h1>}>
                 <MovieInfo 
                     id={id}
@@ -41,6 +41,6 @@ export default async function MovieDetail({ params }: { params: { id: string } }
                     id={id}
                 />
             </Suspense>
-        </>
+        </div>
     );
 }
