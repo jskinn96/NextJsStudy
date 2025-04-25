@@ -1,11 +1,27 @@
 import MovieInfo from "@/components/movieInfo";
 import MovieVideos from "@/components/movieVideos";
-import { Metadata } from "next";
+import { getMovieDetail } from "@/lib/api";
 import { Suspense } from "react";
 
-export const metadata: Metadata = {
-    title: "Movie"
-};
+// export const metadata: Metadata = {
+//     title: "Movie"
+// };
+
+interface IParams {
+    params: { id: string };
+}
+
+//g metadata를 함수형으로 출력 가능
+export async function generateMetadata({ params: { id } }: IParams) {
+
+    const movie = await getMovieDetail(id);
+    
+    return (
+        movie && {
+            title: movie.title,
+        }
+    );
+}
 
 /**
  * g [id]: 동적(다이나믹) 라우팅...폴더 이름을 대괄호로 묶어 생성하며 폴더 이름과 같은 키에 대한 값을 가질 수 있음, 반드시 값이 있어야 함
@@ -16,9 +32,7 @@ export const metadata: Metadata = {
  * ? ex) /movie => params.id = undefined
  * ? ex) /movie/a/b => params.id = ["a", "b"]
 */
-export default async function MovieDetail({ params }: { params: { id: string } }) {
-
-    const { id } = await params;
+export default function MovieDetail({ params: { id } }: IParams) {
 
     // //g await Promise.all을 사용하여 한번에 api data를 받는다.
     // const [movie, videos] = await Promise.all([getMovieDetail(id), getVideos(id)]);
@@ -32,12 +46,12 @@ export default async function MovieDetail({ params }: { params: { id: string } }
     return (
         <div>
             <Suspense fallback={<h1>wait on info</h1>}>
-                <MovieInfo 
+                <MovieInfo
                     id={id}
                 />
             </Suspense>
             <Suspense fallback={<h1>wait on vid</h1>}>
-                <MovieVideos 
+                <MovieVideos
                     id={id}
                 />
             </Suspense>
