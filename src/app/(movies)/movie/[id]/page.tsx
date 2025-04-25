@@ -1,6 +1,7 @@
 import MovieInfo from "@/components/movieInfo";
 import MovieVideos from "@/components/movieVideos";
 import { getMovieDetail } from "@/lib/api";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 // export const metadata: Metadata = {
@@ -8,19 +9,17 @@ import { Suspense } from "react";
 // };
 
 interface IParams {
-    params: { id: string };
+    params: { id: string; };
 }
 
 //g metadata를 함수형으로 출력 가능
-export async function generateMetadata({ params: { id } }: IParams) {
+export async function generateMetadata({ params: { id } }: IParams): Promise<Metadata> {
 
     const movie = await getMovieDetail(id);
     
-    return (
-        movie && {
-            title: movie.title,
-        }
-    );
+    return {
+        title: movie?.title || "Movie",
+    };
 }
 
 /**
