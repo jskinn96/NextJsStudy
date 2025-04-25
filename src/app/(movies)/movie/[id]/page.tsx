@@ -8,7 +8,7 @@ import { Suspense } from "react";
 //     title: "Movie"
 // };
 
-interface PageProps {
+type PageProps = {
     params: { id: string; };
 }
 
