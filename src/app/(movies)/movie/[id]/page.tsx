@@ -31,10 +31,12 @@ export async function generateMetadata({ params: { id } }: PageProps): Promise<M
  * ? ex) /movie => params.id = undefined
  * ? ex) /movie/a/b => params.id = ["a", "b"]
 */
-export default function MovieDetail({ params: { id } }: PageProps) {
+export default function MovieDetail({ params }: PageProps) {
 
     // //g await Promise.all을 사용하여 한번에 api data를 받는다.
     // const [movie, videos] = await Promise.all([getMovieDetail(id), getVideos(id)]);
+
+    const { id } = params;
 
     /**
      * g Suspense: 기능이 로드 되었을 때, 출력 시켜주는 기능 
