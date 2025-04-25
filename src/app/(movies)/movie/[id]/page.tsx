@@ -15,11 +15,9 @@ type PageProps = {
 //g metadata를 함수형으로 출력 가능
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 
-    const { id } = params;
-
-    const movie = await getMovieDetail(id);
+    const movie = await getMovieDetail(params.id);
     
-    return {
+    return {    
         title: movie?.title || "Movie",
     };
 }
