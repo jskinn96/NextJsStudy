@@ -8,12 +8,12 @@ import { Suspense } from "react";
 //     title: "Movie"
 // };
 
-interface IParams {
+interface PageProps {
     params: { id: string; };
 }
 
 //g metadata를 함수형으로 출력 가능
-export async function generateMetadata({ params: { id } }: IParams): Promise<Metadata> {
+export async function generateMetadata({ params: { id } }: PageProps): Promise<Metadata> {
 
     const movie = await getMovieDetail(id);
     
@@ -31,7 +31,7 @@ export async function generateMetadata({ params: { id } }: IParams): Promise<Met
  * ? ex) /movie => params.id = undefined
  * ? ex) /movie/a/b => params.id = ["a", "b"]
 */
-export default function MovieDetail({ params: { id } }: IParams) {
+export default function MovieDetail({ params: { id } }: PageProps) {
 
     // //g await Promise.all을 사용하여 한번에 api data를 받는다.
     // const [movie, videos] = await Promise.all([getMovieDetail(id), getVideos(id)]);
