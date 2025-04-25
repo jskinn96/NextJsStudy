@@ -18,7 +18,7 @@ interface IMovieEl {
 const MovieEl = ({ title, id, poster_path }: IMovieEl) => {
 
   return (
-    <Link href={`/movie/${id}`}>
+    <Link href={`/movie/${id}`} prefetch>
       <div className="grid grid-rows-[1fr_auto] gap-5 cursor-pointer place-items-center">
         <div className="relative w-full aspect-[2/3]">
           <Image
