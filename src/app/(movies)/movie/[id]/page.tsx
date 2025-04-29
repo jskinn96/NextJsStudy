@@ -8,14 +8,16 @@ import { Suspense } from "react";
 //     title: "Movie"
 // };
 
-type PageProps = {
-    params: { id: string; };
+interface PagePropsWithPromise {
+    params: Promise<{ id: string; }>;
 }
 
 //g metadata를 함수형으로 출력 가능
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PagePropsWithPromise): Promise<Metadata> {
     
-    const movie = await getMovieDetail(params.id);
+    const { params } = props;
+    const resolvedParams = await params;
+    const movie = await getMovieDetail(resolvedParams.id);
 
     return {
         title: movie?.title || "Movie",
@@ -31,10 +33,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  * ? ex) /movie => params.id = undefined
  * ? ex) /movie/a/b => params.id = ["a", "b"]
 */
-export default async function MovieDetail({ params }: PageProps) {
+export default async function MovieDetail(props: PagePropsWithPromise) {
 
     // //g await Promise.all을 사용하여 한번에 api data를 받는다.
     // const [movie, videos] = await Promise.all([getMovieDetail(id), getVideos(id)]);
+
+    const { params } = props;
+    const resolvedParams = await params;
 
     /**
      * g Suspense: 기능이 로드 되었을 때, 출력 시켜주는 기능 
@@ -46,12 +51,12 @@ export default async function MovieDetail({ params }: PageProps) {
         <div>
             <Suspense fallback={<h1>wait on info</h1>}>
                 <MovieInfo
-                    id={params.id}
+                    id={resolvedParams.id}
                 />
             </Suspense>
             <Suspense fallback={<h1>wait on vid</h1>}>
                 <MovieVideos
-                    id={params.id}
+                    id={resolvedParams.id}
                 />
             </Suspense>
         </div>
