@@ -1,4 +1,3 @@
-
 /*
 --------------------------------------------------------------------------
 
@@ -238,16 +237,16 @@ export async function getMovieDetail(id: string): Promise<IMovieDetail | undefin
 }
 
 export interface IVideo {
-    iso_639_1: string;       
-    iso_3166_1: string;      
-    name: string;            
-    key: string;             
-    site: string;            
-    size: number;            
-    type: string;            
-    official: boolean;       
-    published_at: string;    
-    id: string;              
+    iso_639_1: string;
+    iso_3166_1: string;
+    name: string;
+    key: string;
+    site: string;
+    size: number;
+    type: string;
+    official: boolean;
+    published_at: string;
+    id: string;
 }
 
 export async function getVideos(id: string): Promise<IVideo[] | undefined> {
@@ -269,7 +268,67 @@ export async function getVideos(id: string): Promise<IVideo[] | undefined> {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
+        return undefined;
+    }
+}
+
+export type TCredit = {
+    adult: boolean;
+    gender: number;
+    id: number;
+    known_for_department: string;
+    name: string;
+    original_name: string;
+    popularity: number;
+    profile_path: string | null;
+    credit_id: string;
+    // cast 멤버에게만 있는 필드
+    cast_id?: number;
+    character?: string;
+    order?: number;
+    // crew 멤버에게만 있는 필드
+    department?: string;
+    job?: string;
+}
+
+export type TCreditData = {
+    acting: TCredit[]; 
+    crew: TCredit[];
+}
+
+export async function getCredits(id: string): Promise<TCreditData | undefined> {
+
+    try {
+
+        const fetchData = await fetch(
+            `${URL}/${id}/credits`,
+            {
+                next: {
+                    revalidate: 86400
+                }
+            }
+        );
+
+        const res = await fetchData.json();
+
+        const resData: TCreditData = {
+            acting: [],
+            crew: [],
+        };
+
+        for (const resEl of res) {
+
+            const department: "acting" | "crew" = resEl.known_for_department.toLowerCase();
+            
+            if (resData[department].length < 5) resData[department].push(resEl);
+        }
+
+        return resData;
+
+    } catch (error) {
+
+        console.error(error);
         return undefined;
     }
 }

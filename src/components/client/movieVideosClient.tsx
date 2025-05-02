@@ -9,7 +9,7 @@ export default function MovieVideosClient({ videos }: { videos: IVideo[] }) {
     const [loaded, setLoaded] = useState<string[]>([]);
 
     return (
-        <div className="w-[80%] mx-auto grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] mt-24">
+        <div className="w-full grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
             {videos.map((video) => (
                 <div key={video.id} className="relative w-full aspect-video rounded-[10px] overflow-hidden">
                     {

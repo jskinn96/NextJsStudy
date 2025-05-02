@@ -4,7 +4,7 @@ import MovieVideosClient from "./client/movieVideosClient";
 /**
  * g async를 쓰게 되면 서버 컴포넌트가 되며 use client를 적용할 수 없다. 
 */
-export default async function MovieVideos({ id }: { id: string }) {
+export default async function MovieVideos({ id }: { id: string; }) {
 
     const videos = await getVideos(id);
 
