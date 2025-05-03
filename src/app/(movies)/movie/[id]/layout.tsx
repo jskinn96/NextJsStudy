@@ -1,5 +1,5 @@
 import MovieInfo from "@/components/movieInfo";
-import MovieNavigation from "@/components/movieNavigation";
+import MovieNavigation from "@/components/MovieNavigation";
 import { Suspense } from "react";
 import { PagePropsWithPromise } from "./page";
 import { Metadata } from "next";
