@@ -293,7 +293,7 @@ export type TCredit = {
 }
 
 export type TCreditData = {
-    acting: TCredit[]; 
+    acting: TCredit[];
     crew: TCredit[];
 }
 
@@ -320,11 +320,111 @@ export async function getCredits(id: string): Promise<TCreditData | undefined> {
         for (const resEl of res) {
 
             const department: "acting" | "crew" = resEl.known_for_department.toLowerCase();
-            
-            if (resData[department].length < 5) resData[department].push(resEl);
+
+            if (resData[department] && resData[department].length < 5) resData[department].push(resEl);
         }
 
         return resData;
+
+    } catch (error) {
+
+        console.error(error);
+        return undefined;
+    }
+}
+
+export interface ISimilars {
+    adult: boolean;
+    backdrop_path: string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_title: string;
+    overview: string;
+    popularity: number;
+    poster_path: string;
+    release_date: string;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
+}
+
+export async function getSimilars(id: string): Promise<ISimilars[] | undefined> {
+
+    try {
+
+        const fetchData = await fetch(
+            `${URL}/${id}/similar`,
+            {
+                next: {
+                    revalidate: 86400
+                }
+            }
+        );
+
+        const res = await fetchData.json();
+
+        return res;
+
+    } catch (error) {
+
+        console.error(error);
+        return undefined;
+    }
+}
+
+type TFlatrate = {
+    logo_path: string;
+    provider_id: number;
+    provider_name: string;
+    display_priority: number;
+}
+
+type TStreamingInfo = {
+    link: string;
+    flatrate: TFlatrate[];
+}
+
+export interface IProviders {
+    [countryCode: string] : TStreamingInfo
+}
+
+export async function getProviders(id: string): Promise<IProviders | undefined> {
+
+    try {
+
+        const fetchData = await fetch(
+            `${URL}/${id}/providers`,
+            {
+                next: {
+                    revalidate: 86400
+                }
+            }
+        );
+
+        const res: IProviders = await fetchData.json();
+
+        const featuredCountries = ['KR', 'US', 'JP', 'GB', 'FR', 'DE'];
+
+        const allCountryCodes = Object.keys(res);
+
+        const primaryCountries = allCountryCodes.filter(code => featuredCountries.includes(code));
+        const otherCountries = allCountryCodes.filter(code => !featuredCountries.includes(code));
+
+        //g 배열의 인덱스 값으로 순서 정렬
+        primaryCountries.sort((a, b) => featuredCountries.indexOf(a) - featuredCountries.indexOf(b));
+        otherCountries.sort();
+    
+        const sortedCountries = [...primaryCountries, ...otherCountries].slice(0, 20);
+
+        const sortedData: IProviders = {};
+        for (const countryCode of sortedCountries) {
+
+            if (res[countryCode]) sortedData[countryCode] = res[countryCode];
+        }
+
+        return sortedData;
 
     } catch (error) {
 

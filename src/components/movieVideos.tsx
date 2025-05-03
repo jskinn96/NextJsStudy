@@ -8,10 +8,16 @@ export default async function MovieVideos({ id }: { id: string; }) {
 
     const videos = await getVideos(id);
 
+    if (!videos || Object.keys(videos).length === 0) {
+        return (
+            <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+                <p className="text-white">Failed to load videos information.</p>
+            </div>
+        );
+    }
+
     //g embed를 통해 youtube 영상을 iframe으로 가져올 수 있다.
     return (
-        videos && (
-            <MovieVideosClient videos={videos.slice(0, 20)} />
-        )
+        <MovieVideosClient videos={videos.slice(0, 20)} />
     );
 }
